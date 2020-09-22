@@ -1,0 +1,143 @@
+proc float addFloats(float $arr[])
+{
+    float $c;
+    for($i = 0; $i < size($arr); $i++)
+    {
+        $c += $arr[$i];
+    }
+    return $c;
+};
+
+proc float subFloats(float $arr[])
+{
+    float $c;
+    for($i = 0; $i < size($arr); $i++)
+    {
+        $c -= $arr[$i];
+    }
+    return $c;
+};
+
+proc float multFloats(float $arr[])
+{
+    float $c;
+    for($i = 0; $i < size($arr); $i++)
+    {
+        $c *= $arr[$i];
+    }
+    return $c;
+};
+
+proc float divFloats(float $arr[])
+{
+    float $c;
+    for($i = 0; $i < size($arr); $i++)
+    {
+        $c /= $arr[$i];
+    }  
+    return $c;
+};
+
+proc float modFloats(float $arr[])
+{
+    float $c;
+    for($i = 0; $i < size($arr); $i++)
+    {
+        $c %= $arr[$i];
+    }
+    return $c;
+};
+
+proc float powFloat(float $num, float $pow)
+{
+    float $c = $num;
+    for($i = 1; $i < $pow; $i++)
+    {
+        $c *= $num;
+    }
+    return $c;
+};
+
+proc float meanFloats(float $arr[])
+{
+    float $c = 0;
+    // Step through values and sum them up
+    for($i = 0; $i < size($arr); $i++)
+    {
+        $c += $arr[$i];
+    }
+    // Divide by the number of values to get the mean
+    $c /= size($arr);
+    return $c;
+};
+
+proc float medianFloats(float $arr[])
+{
+    float $c;
+    $arr = `sort $arr`;
+    // Check whether there are an even or odd number of values
+    if (size($arr) % 2 == 0)
+    {
+        // If it's even, get the two center values and average them
+        int $middleLeft = (size($arr)/2) - 1;
+        float $leftValue = $arr[$middleLeft];
+        int $middleRight = (size($arr)/2);
+        float $rightValue = $arr[$middleRight];
+        int $middle = ($leftValue + $rightValue)/2;
+        $c = $middle;
+    } else
+    {
+        // If it's odd, return the center value
+        int $middle = size($arr)/2;
+        $c = $arr[$middle];
+    }
+    return $c;
+};    
+
+proc float[] modeFloats(float $arr[])
+{
+    // Initialize the return variable
+    float $mode[1] = {0};
+    // Find the greatest value within the input array
+    $arr = `sort $arr`;
+    float $maxValue = $arr[size($arr) -1];
+    // Initialize the auxiliary array
+    float $freqArr[1];
+    
+    // Use the aux array to create an index from 0 to the maximum value
+    for ($i = 0; $i < $maxValue; $i++)
+    {
+        $freqArr[size($freqArr)] = 0;
+    }
+    
+    // Count how often each value occurs in the input array
+    for($i = 0; $i < size($arr); $i++)
+    {
+        int $indexNum = $arr[$i];
+        $freqArr[$indexNum] += 1;
+    }
+    
+    // Find which value in the aux array occurs the most
+    float $highVal = 0;
+    for($i = 0; $i < size($freqArr); $i++)
+    {
+        if ($freqArr[$i] > $highVal)
+        {
+            $highVal = $freqArr[$i];
+        }
+    }
+    
+    // Populate the return array with all values that occur the highest number of times
+    int $highValIndex = 0;
+    for($i = 0; $i < size($freqArr); $i++)
+    {
+        if ($freqArr[$i] == $highVal)
+        {
+            $mode[$highValIndex] = $i;
+            $highValIndex++;
+        }
+    }
+    
+    // Return the array (Works for multimodal data sets)
+    return $mode;
+}
