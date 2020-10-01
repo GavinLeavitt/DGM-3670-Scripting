@@ -1,64 +1,162 @@
-proc float addFloats(float $arr[])
+global proc float[] Calculator(float $numbers[], string $operation)
+{
+    float $return[1] = {0};
+    
+    if ($operation == "add")
+        $return[0] = addFloats($numbers);
+    else if ($operation == "subtract")
+        $return[0] = subFloats($numbers);
+    else if ($operation == "multiply")
+        $return[0] = multFloats($numbers);
+    else if ($operation == "divide")
+        $return[0] = divFloats($numbers);
+    else if ($operation == "modulo")
+        $return[0] = modFloats($numbers);
+    else if ($operation == "power")
+        $return[0] = powFloats($numbers);
+    else if ($operation == "mean")
+        $return[0] = meanFloats($numbers);
+    else if ($operation == "median")
+        $return[0] = medianFloats($numbers);
+    else if ($operation == "mode")
+        $return = modeFloats($numbers);
+    return $return;
+};
+
+global proc float addFloats(float $arr[])
 {
     float $c;
+    string $opString = "";
     for($i = 0; $i < size($arr); $i++)
     {
         $c += $arr[$i];
+        if($opString == "")
+        {
+            $opString = $arr[$i];
+        }
+        else
+        {
+            $opString = $opString + " + " + $arr[$i];
+        }
     }
+    
+    $opString = $opString + " = " + $c;
+    print($opString);
     return $c;
 };
 
-proc float subFloats(float $arr[])
+global proc float subFloats(float $arr[])
 {
     float $c;
+    string $opString = "";
     for($i = 0; $i < size($arr); $i++)
     {
-        $c -= $arr[$i];
+        if($opString == "")
+        {
+            $c = $arr[$i];
+            $opString = $arr[$i];
+        }
+        else
+        {
+            $c -= $arr[$i];
+            $opString = $opString + " - " + $arr[$i];
+        }
     }
+    
+    $opString = $opString + " = " + $c;
+    print($opString);
     return $c;
 };
 
-proc float multFloats(float $arr[])
+global proc float multFloats(float $arr[])
 {
     float $c;
+    string $opString = "";
     for($i = 0; $i < size($arr); $i++)
     {
-        $c *= $arr[$i];
+        if($opString == "")
+        {
+            $c = $arr[$i];
+            $opString = $arr[$i];
+        }
+        else
+        {
+            $c *= $arr[$i];
+            $opString = $opString + " * " + $arr[$i];
+        }
     }
+    
+    $opString = $opString + " = " + $c;
+    print($opString);
     return $c;
 };
 
-proc float divFloats(float $arr[])
+global proc float divFloats(float $arr[])
 {
     float $c;
+    string $opString = "";
     for($i = 0; $i < size($arr); $i++)
     {
-        $c /= $arr[$i];
+        if($opString == "")
+        {
+            $c = $arr[$i];
+            $opString = $arr[$i];
+        }
+        else
+        {
+            $c /= $arr[$i];
+            $opString = $opString + " / " + $arr[$i];
+        }
     }  
+    
+    $opString = $opString + " = " + $c;
+    print($opString);
     return $c;
 };
 
-proc float modFloats(float $arr[])
+global proc float modFloats(float $arr[])
 {
     float $c;
+    string $opString = "";
     for($i = 0; $i < size($arr); $i++)
     {
-        $c %= $arr[$i];
+        if($opString == "")
+        {
+            $c = $arr[$i];
+            $opString = $arr[$i];
+        }
+        else
+        {
+            $c %= $arr[$i];
+            $opString = $opString + " mod " + $arr[$i];
+        }
     }
+    
+    $opString = $opString + " = " + $c;
+    print($opString);
     return $c;
 };
 
-proc float powFloat(float $num, float $pow)
+global proc float powFloats(float $arr[])
 {
-    float $c = $num;
-    for($i = 1; $i < $pow; $i++)
+    float $c = $arr[0];
+    string $opString = $arr[0];
+    for($i = 1; $i < size($arr); $i++)
     {
-        $c *= $num;
+        for($ii = 1; $ii < $arr[$i]; $ii++)
+        {
+            $c *= $arr[$i - 1];
+        }
+        $opString = $opString + " to the power of " + $arr[$i];
+        $arr[$i] = $c;
     }
+    
+    $opString = $opString + " equals " + $c;
+    print($opString);
     return $c;
 };
 
-proc float meanFloats(float $arr[])
+global proc float meanFloats(float $arr[])
 {
     float $c = 0;
     // Step through values and sum them up
@@ -68,10 +166,11 @@ proc float meanFloats(float $arr[])
     }
     // Divide by the number of values to get the mean
     $c /= size($arr);
+    print("The mean of the data set is " + $c);
     return $c;
 };
 
-proc float medianFloats(float $arr[])
+global proc float medianFloats(float $arr[])
 {
     float $c;
     $arr = `sort $arr`;
@@ -91,10 +190,11 @@ proc float medianFloats(float $arr[])
         int $middle = size($arr)/2;
         $c = $arr[$middle];
     }
+    print("The median of the data set is " + $c);
     return $c;
-};    
+};
 
-proc float[] modeFloats(float $arr[])
+global proc float[] modeFloats(float $arr[])
 {
     // Initialize the return variable
     float $mode[1] = {0};
@@ -139,5 +239,20 @@ proc float[] modeFloats(float $arr[])
     }
     
     // Return the array (Works for multimodal data sets)
+    
+    if (size($mode) > 1)
+    {
+        string $opString = "This data set is multimodal. The modes are ";
+        for($i = 0; $i < size($mode); $i++)
+        {
+            $opString = $opString + $mode[$i] + ", ";
+        }
+        print($opString);
+    }
+    else
+    {
+        print("The mode of this data set is " + $mode[0]);
+    }
+    
     return $mode;
-}
+};
