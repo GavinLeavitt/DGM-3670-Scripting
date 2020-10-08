@@ -1,0 +1,39 @@
+{    
+    proc createColorChanger()
+    {
+        string $window = `window -title "Color Changer"`;
+        columnLayout -adjustableColumn true;
+            string $colorSlider = `colorIndexSliderGrp -label "Color" -minValue 1 -maxValue 32 -value 1`;
+            button -label "Change Color" -command("changeColor(\"" + $colorSlider + "\")");
+            button -label "Close" -command("closeColorChanger(\"" + $window + "\")");
+        showWindow $window;
+    }
+    
+    global proc changeColor(string $sliderToUse)
+    {
+        string $objectsToChange[];
+        $objectsToChange = `ls -sl`;
+        int $chosenColor = `colorIndexSliderGrp -query -value $sliderToUse`;
+        overrideColorShapes($objectsToChange, $chosenColor);
+        print $chosenColor;
+    }
+    
+    global proc closeColorChanger(string $windowToClose)
+    {
+        deleteUI $windowToClose;
+    }
+    
+    global proc overrideColorShapes(string $objects[], int $color)
+    {
+        for($obj in $objects)
+        {
+            string $shapes[] = `listRelatives -shapes $objects`;
+            for($shape in $shapes)
+            {
+                setAttr ($shape + ".overrideEnabled")(true);
+                setAttr ($shape + ".overrideColor") ($color - 1);
+            }
+        }
+    }
+}
+createColorChanger();
