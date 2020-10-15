@@ -1,0 +1,44 @@
+proc createRandomGenerator()
+{
+    string $window = `window -title "Random Placement Generator"`;
+    columnLayout -adjustableColumn true;
+    
+    string $numOfDuplicates = `intField -maxValue 100 -minValue 1 -value 1`;
+    
+    string $xExtents = `floatFieldGrp -numberOfFields 2 -label "X Position:   Minimum" -extraLabel "Maximum" -value1 -10 -value2 10`;
+    
+    string $yExtents = `floatFieldGrp -numberOfFields 2 -label "Y Position:   Minimum" -extraLabel "Maximum" -value1 -10 -value2 10`;
+    
+    string $zExtents = `floatFieldGrp -numberOfFields 2 -label "Z Position:   Minimum" -extraLabel "Maximum" -value1 -10 -value2 10`;
+    
+    button -label "Generate Duplicates" -command("generateDuplicates(\"" + $xExtents + "\", \"" + $yExtents + "\", \"" + $zExtents + "\", \"" + $numOfDuplicates + "\")");
+    showWindow $window;
+};
+
+global proc generateDuplicates(string $xExtentsToUse, string $yExtentsToUse, string $zExtentsToUse, string $duplicateAmount)
+{
+    int $minX, $maxX, $minY, $maxY, $minZ, $maxZ;
+    int $timesToCopy = `intField -query -value $duplicateAmount`;
+    string $objectsToDuplicate[];
+    $objectsToDuplicate = `ls -sl`;
+    $minX = `floatFieldGrp -query -value1 $xExtentsToUse`;
+    $maxX = `floatFieldGrp -query -value2 $xExtentsToUse`;
+    $minY = `floatFieldGrp -query -value1 $yExtentsToUse`;
+    $maxY = `floatFieldGrp -query -value2 $yExtentsToUse`;
+    $minZ = `floatFieldGrp -query -value1 $zExtentsToUse`;
+    $maxZ = `floatFieldGrp -query -value2 $zExtentsToUse`;
+    
+    for($obj in $objectsToDuplicate)
+    {
+        print $obj;
+        for($i = 0; $i < $timesToCopy; $i++)
+        {
+            float $xPos = rand($minX, $maxX);
+            float $yPos = rand($minY, $maxY);
+            float $zPos = rand($minZ, $maxZ);
+            duplicate -name($obj + "_Copy_" + ($i + 1)) $obj;
+            move $xPos $yPos $zPos ($obj + "_Copy_" + ($i + 1));
+        }
+    }
+}
+createRandomGenerator();
